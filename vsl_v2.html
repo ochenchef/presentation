@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forge UI — Каталог паттернов</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EBEBEB;--surf:#FAFAFA;--el:#FFFFFF;
+  --bd:#D8D8D8;--bdl:#EDEDED;
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --txt:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;--fb:'Inter',sans-serif;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--txt);font-family:var(--fb);min-height:100vh;}
+
+/* HEADER */
+.hdr{padding:48px 64px 0;max-width:1280px;margin:0 auto;}
+.hdr-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:32px;}
+.logo{font-family:var(--fd);font-size:34px;font-weight:400;letter-spacing:-.02em;}
+.logo em{color:var(--T);font-style:italic;}
+.logo-s{font-size:13px;color:var(--tm);margin-top:4px;}
+.hdr-r{display:flex;align-items:center;gap:10px;}
+.sw{display:flex;align-items:center;gap:8px;background:var(--el);border:1.5px solid var(--bd);
+  border-radius:99px;padding:9px 16px;width:280px;transition:border-color 150ms,box-shadow 150ms;}
+.sw:focus-within{border-color:var(--T);box-shadow:0 0 0 3px rgba(166,61,31,.12);}
+.si{flex:1;font-family:var(--fb);font-size:13px;border:none;outline:none;
+  background:transparent;color:var(--txt);}
+.si::placeholder{color:var(--tm);}
+.cnt{display:inline-flex;align-items:center;font-size:13px;color:var(--t2);
+  background:var(--surf);border:1px solid var(--bd);padding:8px 14px;border-radius:99px;}
+.cnt strong{color:var(--T);margin-right:4px;}
+
+/* CATALOG */
+.cat{max-width:1280px;margin:0 auto;padding:36px 64px 80px;}
+.grp-lbl{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.grp-tag{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--T);background:var(--T5);border:1px solid rgba(166,61,31,.2);padding:3px 9px;border-radius:4px;}
+.grp-cnt{font-size:13px;color:var(--tm);font-weight:500;}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+
+/* CARD */
+.pc{background:var(--el);border:1px solid var(--bd);border-radius:16px;overflow:hidden;
+  cursor:pointer;position:relative;
+  transition:box-shadow 220ms var(--ease),transform 220ms var(--ease),border-color 150ms;}
+.pc:hover{box-shadow:0 8px 28px rgba(0,0,0,.12);transform:translateY(-3px);border-color:var(--T);}
+/* Preview: 16:9 ratio to match slide proportions */
+.pp{width:100%;aspect-ratio:16/9;overflow:hidden;position:relative;background:var(--bg);}
+.pp iframe{width:400%;height:400%;transform:scale(.25);transform-origin:top left;
+  border:none;pointer-events:none;}
+.fav{position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;
+  background:rgba(255,255,255,.92);border:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;opacity:0;transition:opacity 150ms,background 150ms;z-index:2;}
+.pc:hover .fav{opacity:1;}
+.fav:hover{background:var(--T5);border-color:var(--T);}
+.fav.on svg{fill:var(--T);stroke:var(--T);}
+.pf{padding:14px 16px;border-top:1px solid var(--bdl);}
+.pid{font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--T);margin-bottom:3px;}
+.pname{font-family:var(--fd);font-size:16px;font-weight:400;letter-spacing:-.01em;margin-bottom:2px;}
+.pdesc{font-size:12px;color:var(--t2);}
+.pc.hidden{display:none;}
+
+/* MODAL */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(10px);
+  z-index:1000;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity 250ms var(--ease);}
+.mov.open{opacity:1;pointer-events:all;}
+.modal{
+  /* 16:9 aspect — scaled to fit screen */
+  width:min(92vw, calc(92vh * 16/9));
+  height:min(calc(92vw * 9/16), 92vh);
+  background:var(--el);border-radius:16px;overflow:hidden;
+  display:flex;flex-direction:column;
+  box-shadow:0 32px 80px rgba(0,0,0,.35);
+  transform:scale(.94) translateY(16px);
+  transition:transform 300ms var(--spring);
+}
+.mov.open .modal{transform:scale(1) translateY(0);}
+.mtb{display:flex;align-items:center;justify-content:space-between;
+  padding:12px 18px;border-bottom:1px solid var(--bd);flex-shrink:0;background:var(--surf);}
+.mtb-l{display:flex;align-items:center;gap:12px;}
+.mid{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--T);}
+.mname{font-family:var(--fd);font-size:17px;font-weight:400;letter-spacing:-.01em;}
+.mtb-r{display:flex;align-items:center;gap:8px;}
+.mbtn{display:inline-flex;align-items:center;gap:6px;font-family:var(--fb);font-size:12px;
+  font-weight:600;padding:7px 14px;border-radius:8px;cursor:pointer;border:none;transition:all 150ms;}
+.mb-g{background:transparent;color:var(--t2);border:1px solid var(--bd);}
+.mb-g:hover{background:var(--bg);color:var(--txt);}
+.mb-p{background:var(--T);color:#fff;}
+.mb-p:hover{background:var(--T6);}
+.mcl{width:30px;height:30px;border-radius:8px;background:transparent;border:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);transition:all 150ms;}
+.mcl:hover{background:var(--bg);}
+.mbody{flex:1;overflow:hidden;position:relative;}
+.mbody iframe{width:100%;height:100%;border:none;}
+.mnav{position:absolute;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;
+  background:var(--el);border:1px solid var(--bd);box-shadow:0 2px 8px rgba(0,0,0,.1);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 150ms;z-index:10;}
+.mnav:hover{box-shadow:0 4px 16px rgba(0,0,0,.15);transform:translateY(-50%) scale(1.06);}
+.mnav-p{left:12px;}
+.mnav-n{right:12px;}
+
+/* FULLSCREEN */
+.fsov{position:fixed;inset:0;background:#0a0a0a;z-index:2000;display:none;
+  flex-direction:column;}
+.fsov.open{display:flex;}
+
+/* slide stage */
+.fs-stage{ flex:1; position:relative; overflow:hidden; background:#0a0a0a; }
+
+.fs-slot{
+  position:absolute; inset:0; overflow:hidden; pointer-events:none;
+  /* transition duration/easing controlled by JS via CSS vars */
+}
+.fs-slot.active { pointer-events:all; }
+.fs-slot iframe { display:block; flex-shrink:0; }
+
+/* ── FADE ── */
+.fs-slot.fade-idle    { opacity:0; transform:none; }
+.fs-slot.fade-enter   { opacity:0; transform:none; transition:opacity 500ms ease; }
+.fs-slot.fade-active  { opacity:1; transform:none; transition:opacity 500ms ease; }
+.fs-slot.fade-exit    { opacity:0; transform:none; transition:opacity 500ms ease; }
+
+/* ── ZOOM ── */
+.fs-slot.zoom-idle    { opacity:0; transform:scale(1.06); }
+.fs-slot.zoom-enter   { opacity:0; transform:scale(1.06); transition:opacity 500ms ease,transform 500ms cubic-bezier(0.16,1,0.3,1); }
+.fs-slot.zoom-active  { opacity:1; transform:scale(1);    transition:opacity 500ms ease,transform 500ms cubic-bezier(0.16,1,0.3,1); }
+.fs-slot.zoom-exit    { opacity:0; transform:scale(0.96); transition:opacity 400ms ease,transform 400ms ease; }
+
+/* ── REVEAL (curtain from top) ── */
+.fs-slot.reveal-idle   { clip-path:inset(0 0 100% 0); }
+.fs-slot.reveal-enter  { clip-path:inset(0 0 100% 0); transition:clip-path 550ms cubic-bezier(0.16,1,0.3,1); }
+.fs-slot.reveal-active { clip-path:inset(0 0 0% 0);   transition:clip-path 550ms cubic-bezier(0.16,1,0.3,1); }
+.fs-slot.reveal-exit   { opacity:0; clip-path:inset(0 0 0% 0); transition:opacity 300ms ease 200ms; }
+
+/* ── MORPH (current goes down, new comes from top) ── */
+.fs-slot.morph-idle    { opacity:0; transform:translateY(-40px); }
+.fs-slot.morph-enter   { opacity:0; transform:translateY(-40px); transition:opacity 480ms ease,transform 480ms cubic-bezier(0.16,1,0.3,1); }
+.fs-slot.morph-active  { opacity:1; transform:translateY(0);     transition:opacity 480ms ease,transform 480ms cubic-bezier(0.16,1,0.3,1); }
+.fs-slot.morph-exit    { opacity:0; transform:translateY(40px);  transition:opacity 380ms ease,transform 380ms ease; }
+
+/* bottom bar */
+.fs-bar{
+  flex-shrink:0; height:60px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 32px;
+  background:rgba(255,255,255,.04);
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.fs-bar-left{display:flex;align-items:center;gap:16px;}
+.fs-id{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:#A63D1F;font-family:var(--fb);}
+.fs-name{font-family:var(--fd);font-size:18px;color:rgba(255,255,255,.85);}
+.fs-bar-center{display:flex;align-items:center;gap:8px;}
+.fs-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.2);
+  cursor:pointer;transition:all 200ms;}
+.fs-dot.on{background:#A63D1F;transform:scale(1.3);}
+.fs-bar-right{display:flex;align-items:center;gap:10px;}
+
+/* nav arrows */
+.fs-nav{
+  width:44px;height:44px;border-radius:50%;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.7);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all 180ms;
+}
+.fs-nav:hover{background:rgba(255,255,255,.16);color:#fff;}
+
+/* close button */
+.fs-close-btn{
+  display:flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);
+  color:rgba(255,255,255,.7);border-radius:8px;
+  padding:8px 16px;font-size:12px;font-weight:600;cursor:pointer;
+  font-family:var(--fb);transition:all 180ms;
+}
+.fs-close-btn:hover{background:rgba(255,255,255,.16);color:#fff;}
+
+/* transition mode picker */
+.fs-modes{display:flex;align-items:center;gap:4px;margin-right:4px;}
+.fs-mode{
+  font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  padding:5px 11px;border-radius:6px;cursor:pointer;
+  background:transparent;border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.35);font-family:var(--fb);transition:all 180ms;
+}
+.fs-mode:hover{color:rgba(255,255,255,.7);border-color:rgba(255,255,255,.3);}
+.fs-mode.on{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3);}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-top">
+    <div>
+      <div class="logo">Forge <em>UI</em></div>
+      <div class="logo-s">Каталог паттернов · Карьерный коучинг</div>
+    </div>
+    <div class="hdr-r">
+      <div class="sw">
+        <svg width="14" height="14" fill="none" stroke="var(--tm)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="si" id="search" type="text" placeholder="Поиск по ID или названию...">
+      </div>
+      <div class="cnt"><strong id="vcnt">20</strong> паттернов</div>
+    </div>
+  </div>
+</header>
+
+<div class="cat">
+  <div class="grp-lbl">
+    <span class="grp-tag">BASE</span>
+    <span class="grp-cnt" id="gcnt">20 паттернов</span>
+  </div>
+  <div class="pgrid" id="grid"></div>
+</div>
+
+<!-- MODAL -->
+<div class="mov" id="mov" onclick="ovClick(event)">
+  <div class="modal">
+    <div class="mtb">
+      <div class="mtb-l">
+        <span class="mid" id="mid">P01</span>
+        <span class="mname" id="mname">Cover</span>
+      </div>
+      <div class="mtb-r">
+        <button class="mbtn mb-g" onclick="copyHTML()">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Скопировать HTML
+        </button>
+        <button class="mbtn mb-p" onclick="goFS()">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+          На весь экран
+        </button>
+        <button class="mcl" onclick="closeM()">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="mbody">
+      <iframe id="mif" srcdoc=""></iframe>
+      <button class="mnav mnav-p" onclick="nav(-1)">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="mnav mnav-n" onclick="nav(1)">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FULLSCREEN -->
+<div class="fsov" id="fsov">
+  <div class="fs-stage" id="fs-stage">
+    <div class="fs-slot active" id="fs-slot-a">
+      <iframe id="fs-if-a" srcdoc="" frameborder="0"></iframe>
+    </div>
+    <div class="fs-slot" id="fs-slot-b">
+      <iframe id="fs-if-b" srcdoc="" frameborder="0"></iframe>
+    </div>
+  </div>
+  <div class="fs-bar">
+    <div class="fs-bar-left">
+      <span class="fs-id" id="fs-id">P01</span>
+      <span class="fs-name" id="fs-name">Cover</span>
+    </div>
+    <div class="fs-bar-center" id="fs-dots"></div>
+    <div class="fs-bar-right">
+      <div class="fs-modes">
+        <button class="fs-mode on"  onclick="setFsMode('fade',this)">Fade</button>
+        <button class="fs-mode"     onclick="setFsMode('zoom',this)">Zoom</button>
+        <button class="fs-mode"     onclick="setFsMode('reveal',this)">Reveal</button>
+        <button class="fs-mode"     onclick="setFsMode('morph',this)">Morph</button>
+      </div>
+      <button class="fs-nav" onclick="fsNav(-1)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="fs-nav" onclick="fsNav(1)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+      <button class="fs-close-btn" onclick="closeFS()">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        Выйти
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+const slides = [
+  {id:'S00',name:'Следующий уровень',desc:'Титул',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+html,body{background:#111;}
+.CZ{background:#111;padding:80px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;}
+.deco{position:absolute;font-family:var(--fd);font-size:500px;color:rgba(255,255,255,.03);
+  letter-spacing:-.08em;line-height:1;bottom:-80px;left:-20px;pointer-events:none;}
+.label{font-size:15px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(255,255,255,.35);margin-bottom:40px;display:flex;align-items:center;gap:16px;}
+.label::before{content:'';display:block;width:36px;height:1.5px;background:var(--O);}
+.title{font-family:var(--fd);font-size:136px;letter-spacing:-.055em;line-height:.86;color:#fff;}
+.title em{color:var(--O);font-style:italic;}
+.sub{font-size:26px;color:rgba(255,255,255,.45);margin-top:40px;line-height:1.5;max-width:580px;}
+.EZ{background:rgba(255,255,255,.04)!important;border-left:1px solid rgba(255,255,255,.08)!important;}
+.EZ::before{display:none!important;}
+</style>
+<body>
+<div class="CZ">
+  <div class="deco">СУ</div>
+  <div class="label">Татьяна Разгуляева · Карьерный коуч</div>
+  <div class="title">Следующий<br><em>уровень</em></div>
+  <div class="sub">Как получить оффер с ростом зарплаты — без случайностей и лишних лет ожидания</div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S01',name:'Что будет в видео',desc:'Введение',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:72px 80px;display:flex;flex-direction:column;justify-content:center;gap:48px;}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.card{background:var(--BG);border-radius:20px;padding:36px 28px;display:flex;flex-direction:column;align-items:flex-start;gap:18px;}
+.num{width:48px;height:48px;border-radius:50%;background:var(--W);border:2px solid var(--BD);
+  display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:var(--t2);}
+.num-a{background:var(--O);border-color:var(--O);color:#fff;}
+.ct{font-family:var(--fd);font-size:26px;letter-spacing:-.01em;line-height:1.15;}
+</style>
+<body>
+<div class="CZ">
+  <div>
+    <div class="ey" style="margin-bottom:14px">В этом видео</div>
+    <div style="font-family:var(--fd);font-size:68px;letter-spacing:-.03em;line-height:.95">Что вас ждёт</div>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="num num-a">1</div><div class="ct">Почему опытные специалисты не получают то, чего заслуживают</div></div>
+    <div class="card"><div class="num">2</div><div class="ct">Моя история и почему я в этом разбираюсь</div></div>
+    <div class="card"><div class="num">3</div><div class="ct">3 ошибки, которые блокируют карьерный рост</div></div>
+    <div class="card"><div class="num">4</div><div class="ct">Что реально работает и конкретный следующий шаг</div></div>
+  </div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S02',name:'Знакомство',desc:'Эксперт',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:72px 80px;display:flex;flex-direction:column;justify-content:center;gap:28px;}
+.av{width:110px;height:110px;border-radius:50%;background:var(--O5);border:3px solid var(--O);
+  display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:40px;color:var(--O);flex-shrink:0;}
+.name{font-family:var(--fd);font-size:80px;letter-spacing:-.04em;line-height:.9;}
+.role{font-size:20px;color:var(--t2);line-height:1.7;margin-top:16px;max-width:700px;}
+.tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;}
+</style>
+<body>
+<div class="CZ">
+  <div class="av">ТР</div>
+  <div>
+    <div class="name">Татьяна Разгуляева</div>
+    <div class="role">Карьерный коуч · 10+ лет в HR · Руководитель Центра карьерного развития в Министерстве · Преподаватель по управлению персоналом (РАНХиГС)</div>
+    <div class="tags">
+      <span class="bg bg-O">Карьерный коуч</span>
+      <span class="bg bg-T">10+ лет в HR</span>
+      <span class="bg" style="background:var(--I5);color:var(--I)">РАНХиГС</span>
+    </div>
+  </div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S03',name:'Они проигрывали',desc:'Эксперт',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:80px;display:flex;flex-direction:column;justify-content:center;}
+.big{font-family:var(--fd);font-size:52px;letter-spacing:-.025em;line-height:1.25;max-width:800px;color:var(--t1);}
+.accent{color:var(--T);}
+.grey{font-size:26px;color:var(--t2);line-height:1.6;max-width:680px;margin-top:8px;}
+</style>
+<body>
+<div class="CZ">
+  <div class="ey-o" style="margin-bottom:24px">Умные. Опытные. Достойные.</div>
+  <div class="big">«Я видела тысячи кандидатов, которые проигрывали — <span class="accent">не потому что были хуже других»</span></div>
+  <div class="divider"></div>
+  <div class="grey">А потому что не знали, на что смотрит человек по ту сторону стола</div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S04',name:'Моя история',desc:'Эксперт',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--BG);padding:64px 80px;display:flex;flex-direction:column;justify-content:center;gap:36px;}
+.cards{display:flex;flex-direction:column;gap:14px;}
+.hcard{background:var(--W);border-radius:16px;padding:28px 32px;display:flex;align-items:flex-start;gap:20px;}
+.stripe{width:4px;border-radius:4px;flex-shrink:0;align-self:stretch;}
+.stripe-g{background:var(--O);}
+.stripe-r{background:var(--T);}
+.htext{font-size:20px;color:var(--t1);line-height:1.55;}
+</style>
+<body>
+<div class="CZ">
+  <div>
+    <div class="ey" style="margin-bottom:12px">Личная история</div>
+    <div style="font-family:var(--fd);font-size:60px;letter-spacing:-.03em;">Моя история</div>
+  </div>
+  <div class="cards">
+    <div class="hcard"><div class="stripe stripe-g"></div><div class="htext">Работала с полной отдачей. Деньги есть, должность есть.</div></div>
+    <div class="hcard"><div class="stripe stripe-g"></div><div class="htext">Ощущение что топчусь на месте — но что именно не так, непонятно.</div></div>
+    <div class="hcard"><div class="stripe stripe-r"></div><div class="htext">Уволилась. Без плана. Почти 3 года на поиск себя.</div></div>
+    <div class="hcard"><div class="stripe stripe-r"></div><div class="htext">Выгорание. Депрессия. Не потому что плохой специалист.</div></div>
+  </div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S05',name:'Знаю с обеих сторон',desc:'Эксперт',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:80px;display:flex;flex-direction:column;justify-content:center;}
+.big{font-family:var(--fd);font-size:48px;letter-spacing:-.025em;line-height:1.3;max-width:820px;color:var(--t1);}
+.grey{font-size:24px;color:var(--t2);line-height:1.65;max-width:800px;margin-top:8px;}
+</style>
+<body>
+<div class="CZ">
+  <div class="ey-o" style="margin-bottom:24px">Знаю как это работает с обеих сторон</div>
+  <div class="big">Сторона найма — 10+ лет принимала решения: кого брать, кому отказывать, кому предлагать больше</div>
+  <div class="divider"></div>
+  <div class="grey">Именно поэтому занимаюсь карьерным сопровождением — чтобы люди не теряли 3 года там, где можно пройти за 2 месяца</div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S06',name:'3 ошибки',desc:'Ловушки',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:72px 80px;display:flex;flex-direction:column;justify-content:center;gap:48px;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.card{background:var(--T5);border-radius:20px;padding:36px 32px;display:flex;flex-direction:column;gap:18px;border:1px solid rgba(166,61,31,.15);}
+.num{width:48px;height:48px;border-radius:50%;background:var(--T);
+  display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;}
+.ct{font-family:var(--fd);font-size:26px;letter-spacing:-.01em;line-height:1.2;color:var(--t1);}
+</style>
+<body>
+<div class="CZ">
+  <div>
+    <div class="ey" style="margin-bottom:12px">Разберём главное</div>
+    <div style="font-family:var(--fd);font-size:72px;letter-spacing:-.04em">3 ошибки которые<br>блокируют рост</div>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="num">1</div><div class="ct">«Хорошая работа говорит сама за себя»</div></div>
+    <div class="card"><div class="num">2</div><div class="ct">«Я не знаю, сколько стою»</div></div>
+    <div class="card"><div class="num">3</div><div class="ct">«Ищу там, где все ищут»</div></div>
+  </div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S07',name:'Ошибка 1',desc:'Ловушки',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:80px;display:flex;flex-direction:column;justify-content:center;position:relative;}
+.trap-num{font-family:var(--fd);font-size:300px;letter-spacing:-.06em;line-height:.8;color:var(--T5);position:absolute;top:40px;right:60px;pointer-events:none;}
+.trap-title{font-family:var(--fd);font-size:30px;color:var(--O);letter-spacing:-.01em;margin-bottom:28px;}
+.trap-big{font-family:var(--fd);font-size:64px;letter-spacing:-.03em;line-height:1.0;max-width:720px;margin-bottom:32px;}
+.trap-point{display:flex;align-items:flex-start;gap:16px;margin-bottom:18px;}
+.tp-dot{width:10px;height:10px;border-radius:50%;background:var(--O);flex-shrink:0;margin-top:12px;}
+.tp-tx{font-size:26px;color:var(--t2);line-height:1.5;}
+</style>
+<body>
+<div class="CZ">
+  <div class="trap-num">1</div>
+  <div class="ey" style="margin-bottom:20px">Ошибка 1</div>
+  <div class="trap-title">«Хорошая работа говорит сама за себя»</div>
+  <div class="trap-big">Рынок не видит вашу ценность автоматически</div>
+  <div class="trap-point"><div class="tp-dot"></div><div class="tp-tx">Её нужно упаковать и показать</div></div>
+  <div class="trap-point"><div class="tp-dot"></div><div class="tp-tx">Это не хвастовство — это навык</div></div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S08',name:'Ошибка 2',desc:'Ловушки',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:80px;display:flex;flex-direction:column;justify-content:center;position:relative;}
+.trap-num{font-family:var(--fd);font-size:300px;letter-spacing:-.06em;line-height:.8;color:var(--T5);position:absolute;top:40px;right:60px;pointer-events:none;}
+.trap-title{font-family:var(--fd);font-size:30px;color:var(--O);letter-spacing:-.01em;margin-bottom:32px;}
+.scene{background:var(--BG);border-radius:14px;padding:22px 28px;margin-bottom:36px;display:inline-flex;align-items:center;gap:16px;}
+.scene-tx{font-size:22px;color:var(--t2);font-style:italic;}
+.arrow{font-size:28px;color:var(--BD);}
+.scene-tx2{font-size:22px;color:var(--T);font-style:italic;}
+.trap-big{font-family:var(--fd);font-size:60px;letter-spacing:-.03em;line-height:1.0;max-width:750px;}
+.trap-accent{color:var(--T);}
+</style>
+<body>
+<div class="CZ">
+  <div class="trap-num">2</div>
+  <div class="ey" style="margin-bottom:20px">Ошибка 2</div>
+  <div class="trap-title">«Я не знаю, сколько стою»</div>
+  <div class="scene">
+    <div class="scene-tx">Называет цифру</div>
+    <div class="arrow">→</div>
+    <div class="scene-tx2">начинает оправдываться...</div>
+  </div>
+  <div class="trap-big">Это не скромность.<br>Это <span class="trap-accent">неуверенность</span>, которая стоит десятки тысяч рублей в месяц</div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S09',name:'Ошибка 3',desc:'Ловушки',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:72px 80px;display:flex;flex-direction:column;justify-content:center;position:relative;gap:32px;}
+.trap-num{font-family:var(--fd);font-size:300px;letter-spacing:-.06em;line-height:.8;color:var(--T5);position:absolute;top:40px;right:60px;pointer-events:none;}
+.trap-title{font-family:var(--fd);font-size:30px;color:var(--O);letter-spacing:-.01em;}
+.stat{font-family:var(--fd);font-size:52px;letter-spacing:-.025em;line-height:1.1;max-width:700px;}
+.flow{display:flex;align-items:center;gap:0;}
+.fstep{background:var(--BG);border-radius:16px;padding:28px 36px;text-align:center;}
+.fstep-bad{background:var(--T5);border:1px solid rgba(166,61,31,.2);}
+.fs-t{font-size:24px;font-weight:600;color:var(--t1);}
+.fs-s{font-size:16px;color:var(--tm);margin-top:6px;}
+.farrow{font-size:40px;color:var(--BD);padding:0 24px;}
+.warn{display:flex;align-items:center;gap:14px;}
+.warn-dot{width:12px;height:12px;border-radius:50%;background:var(--T);flex-shrink:0;}
+.warn-t{font-size:26px;color:var(--T);font-weight:600;}
+</style>
+<body>
+<div class="CZ">
+  <div class="trap-num">3</div>
+  <div class="ey" style="margin-bottom:4px">Ошибка 3</div>
+  <div class="trap-title">«Ищу там, где все ищут»</div>
+  <div class="stat">Большинство позиций закрываются до появления на HH</div>
+  <div class="flow">
+    <div class="fstep"><div class="fs-t">Резюме</div><div class="fs-s">отправлено</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep fstep-bad"><div class="fs-t">ATS фильтр</div><div class="fs-s">автоматический отсев</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="fs-t">Живой человек</div><div class="fs-s">видит единицы</div></div>
+  </div>
+  <div class="warn"><div class="warn-dot"></div><div class="warn-t">Большинство не проходят фильтр</div></div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S10',name:'Три точки роста',desc:'Ловушки',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--BG);padding:64px 80px;display:flex;flex-direction:column;justify-content:center;gap:36px;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.card{background:var(--W);border-radius:18px;padding:32px;}
+.cn{font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--T);margin-bottom:10px;}
+.ct{font-family:var(--fd);font-size:28px;letter-spacing:-.01em;line-height:1.2;}
+.footer{background:var(--O5);border-radius:16px;padding:24px 32px;border:1px solid rgba(90,125,62,.2);}
+.ft{font-size:22px;color:var(--O);font-weight:600;}
+</style>
+<body>
+<div class="CZ">
+  <div>
+    <div class="ey" style="margin-bottom:12px">Итого</div>
+    <div style="font-family:var(--fd);font-size:64px;letter-spacing:-.03em;">Три точки где<br>ломается рост</div>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="cn">Ошибка 1</div><div class="ct">Неупакованный опыт</div></div>
+    <div class="card"><div class="cn">Ошибка 2</div><div class="ct">Нет уверенности в цифре</div></div>
+    <div class="card"><div class="cn">Ошибка 3</div><div class="ct">Ищете не там</div></div>
+  </div>
+  <div class="footer">
+    <div class="ft">Каждую можно закрыть — не за годы, за несколько недель</div>
+  </div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S11',name:'Инсайт 1',desc:'Что работает',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:72px 80px;display:flex;flex-direction:column;justify-content:center;gap:32px;}
+.flow{display:flex;align-items:center;gap:0;}
+.fbox{background:var(--BG);border-radius:16px;padding:28px 40px;text-align:center;min-width:180px;}
+.fbox-a{background:var(--O5);border:1px solid rgba(90,125,62,.2);}
+.fb-t{font-family:var(--fd);font-size:32px;letter-spacing:-.01em;}
+.fb-s{font-size:16px;color:var(--tm);margin-top:6px;}
+.fbox-q{background:var(--T5);border:1px solid rgba(166,61,31,.2);}
+.fbq-t{font-family:var(--fd);font-size:48px;color:var(--T);}
+.farrow{font-size:44px;color:var(--BD);padding:0 24px;}
+.point{font-size:26px;color:var(--t2);line-height:1.55;max-width:760px;}
+.point-acc{color:var(--T);font-weight:700;}
+</style>
+<body>
+<div class="CZ">
+  <div>
+    <div class="ey-o" style="margin-bottom:12px">Инсайт 1</div>
+    <div style="font-family:var(--fd);font-size:72px;letter-spacing:-.04em;line-height:.92">Рост начинается с вопроса «куда»</div>
+  </div>
+  <div class="flow">
+    <div class="fbox fbox-a"><div class="fb-t">Точка А</div><div class="fb-s">сейчас</div></div>
+    <div class="farrow">→</div>
+    <div class="fbox fbox-q"><div class="fbq-t">?</div></div>
+    <div class="farrow">→</div>
+    <div class="fbox"><div class="fb-t">Точка Б</div><div class="fb-s">цель</div></div>
+  </div>
+  <div class="point">Большинство сразу спрашивают <span class="point-acc">«а как?»</span> — это неправильный первый вопрос</div>
+  <div class="point">Сначала нужно сформулировать точку Б. <span class="point-acc">Конкретно</span></div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S12',name:'Инсайт 2',desc:'Что работает',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:80px;display:flex;flex-direction:column;justify-content:center;}
+.big{font-family:var(--fd);font-size:80px;letter-spacing:-.04em;line-height:.9;margin-bottom:8px;}
+.sub{font-family:var(--fd);font-size:80px;letter-spacing:-.04em;line-height:.9;color:var(--O);margin-bottom:40px;font-style:italic;}
+.point{font-size:24px;color:var(--t2);line-height:1.55;margin-bottom:14px;max-width:700px;}
+.point-acc{color:var(--T);font-weight:700;}
+.task{background:var(--O5);border-radius:14px;padding:22px 28px;margin-top:8px;display:flex;align-items:center;gap:16px;border:1px solid rgba(90,125,62,.2);}
+.task-t{font-size:20px;color:var(--O);font-weight:600;}
+</style>
+<body>
+<div class="CZ">
+  <div class="ey-o" style="margin-bottom:24px">Инсайт 2</div>
+  <div class="big">Ваш опыт стоит больше</div>
+  <div class="sub">чем вы думаете</div>
+  <div class="point">Большинство воспринимают свои навыки как «это же очевидно, это умеют все»</div>
+  <div class="point"><span class="point-acc">Нет. Не умеют.</span></div>
+  <div class="task">
+    <div class="task-t">✏️ &nbsp;Задание: напишите 5 навыков — что вы умеете</div>
+  </div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S13',name:'Инсайт 3',desc:'Что работает',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:80px;display:flex;flex-direction:column;justify-content:center;}
+.big{font-family:var(--fd);font-size:80px;letter-spacing:-.04em;line-height:.9;margin-bottom:8px;}
+.sub{font-family:var(--fd);font-size:80px;letter-spacing:-.04em;line-height:.9;color:var(--O);font-style:italic;margin-bottom:40px;}
+.point{font-size:26px;color:var(--t2);line-height:1.55;margin-bottom:16px;max-width:700px;}
+.point-acc{color:var(--O);font-weight:600;}
+</style>
+<body>
+<div class="CZ">
+  <div class="ey-o" style="margin-bottom:24px">Инсайт 3</div>
+  <div class="big">Деньги — это переговоры</div>
+  <div class="sub">не лотерея</div>
+  <div class="point">Работодатель смотрит как вы себя ведёте в разговоре о деньгах</div>
+  <div class="point"><span class="point-acc">Это можно подготовить. Это навык.</span></div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S14',name:'Программа',desc:'Программа',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:80px;display:flex;flex-direction:column;justify-content:center;}
+.name{font-family:var(--fd);font-size:88px;letter-spacing:-.045em;line-height:.88;margin-bottom:36px;}
+.name em{color:var(--O);font-style:italic;}
+.pills{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px;}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--BG);border-radius:99px;
+  padding:12px 22px;font-size:18px;font-weight:600;color:var(--t1);}
+.desc{font-size:26px;color:var(--t2);line-height:1.6;max-width:680px;}
+.desc-acc{color:var(--O);font-weight:600;}
+</style>
+<body>
+<div class="CZ">
+  <div class="ey-o" style="margin-bottom:24px">Программа</div>
+  <div class="name">«Следующий<br><em>уровень»</em></div>
+  <div class="pills">
+    <div class="pill">👤 Индивидуально</div>
+    <div class="pill">📅 2 месяца</div>
+    <div class="pill">💬 8 сессий 1:1</div>
+  </div>
+  <div class="desc"><span class="desc-acc">Не групповой курс.</span> Под вашу конкретную ситуацию</div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S15',name:'Как устроена',desc:'Программа',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--BG);padding:56px 72px;display:flex;flex-direction:column;justify-content:center;gap:32px;}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.scard{background:var(--W);border-radius:16px;padding:26px 28px;display:flex;align-items:flex-start;gap:16px;}
+.sn{width:40px;height:40px;border-radius:50%;background:var(--O);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0;}
+.st{font-size:19px;color:var(--t1);line-height:1.4;font-weight:500;}
+</style>
+<body>
+<div class="CZ">
+  <div>
+    <div class="ey-o" style="margin-bottom:10px">Как устроена программа</div>
+    <div style="font-family:var(--fd);font-size:60px;letter-spacing:-.03em;">6 блоков · путь от А к результату</div>
+  </div>
+  <div class="grid">
+    <div class="scard"><div class="sn">1</div><div class="st">Куда вы на самом деле хотите</div></div>
+    <div class="scard"><div class="sn">2</div><div class="st">Ваш опыт и реальная стоимость</div></div>
+    <div class="scard"><div class="sn">3</div><div class="st">Рынок вас увидит — резюме + стратегия</div></div>
+    <div class="scard"><div class="sn">4</div><div class="st">Переговоры о деньгах</div></div>
+    <div class="scard"><div class="sn">5</div><div class="st">Рост в руководителя</div></div>
+    <div class="scard"><div class="sn">6</div><div class="st">Запуск — поиск, переговоры, переход</div></div>
+  </div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S16',name:'Результат',desc:'Программа',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:80px;display:flex;flex-direction:column;justify-content:center;gap:32px;}
+.rlist{display:flex;flex-direction:column;gap:16px;}
+.ritem{display:flex;align-items:flex-start;gap:18px;}
+.rdot{width:32px;height:32px;border-radius:50%;background:var(--O5);border:2px solid var(--O);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.rt{font-family:var(--fd);font-size:40px;letter-spacing:-.02em;line-height:1.1;}
+.footer-note{background:var(--BG);border-radius:14px;padding:20px 28px;display:inline-block;}
+.fn-t{font-size:18px;color:var(--tm);font-style:italic;}
+</style>
+<body>
+<div class="CZ">
+  <div>
+    <div class="ey-o" style="margin-bottom:14px">Что вы получите</div>
+    <div style="font-family:var(--fd);font-size:68px;letter-spacing:-.035em;">Результат</div>
+  </div>
+  <div class="rlist">
+    <div class="ritem"><div class="rdot"><svg width="14" height="14" fill="none" stroke="#5A7D3E" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="rt">Оффер с ростом зарплаты</div></div>
+    <div class="ritem"><div class="rdot"><svg width="14" height="14" fill="none" stroke="#5A7D3E" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="rt">Повышение или переход в управление</div></div>
+    <div class="ritem"><div class="rdot"><svg width="14" height="14" fill="none" stroke="#5A7D3E" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><div class="rt">Чёткий план с конкретными шагами</div></div>
+  </div>
+  <div class="footer-note">
+    <div class="fn-t">Один оффер окупает программу за несколько недель</div>
+  </div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S17',name:'История 1',desc:'Истории клиентов',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--BG);padding:64px 80px;display:flex;flex-direction:column;justify-content:center;gap:32px;}
+.story-card{background:var(--W);border-radius:20px;padding:40px;}
+.sc-title{font-family:var(--fd);font-size:52px;letter-spacing:-.025em;margin-bottom:28px;line-height:1.1;}
+.sc-divider{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.sc-box{border-radius:14px;padding:24px 28px;}
+.sc-box-l{background:var(--BG);}
+.sc-box-r{background:var(--O5);border:1px solid rgba(90,125,62,.2);}
+.sc-lbl{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:10px;}
+.sc-lbl-r{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--O);margin-bottom:10px;}
+.sc-tx{font-size:20px;color:var(--t1);line-height:1.6;}
+</style>
+<body>
+<div class="CZ">
+  <div class="ey" style="margin-bottom:10px">Истории клиентов</div>
+  <div class="story-card">
+    <div class="sc-title">«Я ничего не умею»</div>
+    <div class="sc-divider">
+      <div class="sc-box sc-box-l">
+        <div class="sc-lbl">Ситуация</div>
+        <div class="sc-tx">Закрыла бизнес. 25 лет. Состояние «я неудачница» — полная потеря ориентиров</div>
+      </div>
+      <div class="sc-box sc-box-r">
+        <div class="sc-lbl-r">Результат</div>
+        <div class="sc-tx">Ясность своей ценности + конкретные первые шаги. Вышла из «я ничего не умею»</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S18',name:'История 2',desc:'Истории клиентов',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--BG);padding:64px 80px;display:flex;flex-direction:column;justify-content:center;gap:32px;}
+.story-card{background:var(--W);border-radius:20px;padding:40px;}
+.sc-title{font-family:var(--fd);font-size:52px;letter-spacing:-.025em;margin-bottom:28px;line-height:1.1;}
+.sc-divider{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.sc-box{border-radius:14px;padding:24px 28px;}
+.sc-box-l{background:var(--BG);}
+.sc-box-r{background:var(--O5);border:1px solid rgba(90,125,62,.2);}
+.sc-lbl{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:10px;}
+.sc-lbl-r{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--O);margin-bottom:10px;}
+.sc-tx{font-size:20px;color:var(--t1);line-height:1.6;}
+</style>
+<body>
+<div class="CZ">
+  <div class="ey" style="margin-bottom:10px">Истории клиентов</div>
+  <div class="story-card">
+    <div class="sc-title">«Получила оффер, но сомневаюсь»</div>
+    <div class="sc-divider">
+      <div class="sc-box sc-box-l">
+        <div class="sc-lbl">Ситуация</div>
+        <div class="sc-tx">Оффер есть, зарплата выше — но страх «я не соответствую» парализовал</div>
+      </div>
+      <div class="sc-box sc-box-r">
+        <div class="sc-lbl-r">Результат</div>
+        <div class="sc-tx">За одну сессию — уверенность и план. Приняла оффер.</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S19',name:'История 3',desc:'Истории клиентов',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--BG);padding:64px 80px;display:flex;flex-direction:column;justify-content:center;gap:32px;}
+.story-card{background:var(--W);border-radius:20px;padding:40px;}
+.sc-title{font-family:var(--fd);font-size:52px;letter-spacing:-.025em;margin-bottom:28px;line-height:1.1;}
+.sc-divider{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.sc-box{border-radius:14px;padding:24px 28px;}
+.sc-box-l{background:var(--BG);}
+.sc-box-r{background:var(--O5);border:1px solid rgba(90,125,62,.2);}
+.sc-lbl{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tm);margin-bottom:10px;}
+.sc-lbl-r{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--O);margin-bottom:10px;}
+.sc-tx{font-size:20px;color:var(--t1);line-height:1.6;}
+</style>
+<body>
+<div class="CZ">
+  <div class="ey" style="margin-bottom:10px">Истории клиентов</div>
+  <div class="story-card">
+    <div class="sc-title">«День сурка»</div>
+    <div class="sc-divider">
+      <div class="sc-box sc-box-l">
+        <div class="sc-lbl">Ситуация</div>
+        <div class="sc-tx">35 лет, хорошая работа — но каждый воскресный вечер накрывает паника</div>
+      </div>
+      <div class="sc-box sc-box-r">
+        <div class="sc-lbl-r">Результат</div>
+        <div class="sc-tx">«Иногда результат — это не новая работа. Это ясность»</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+  {id:'S20',name:'Призыв к действию',desc:'Следующий шаг',html:`<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --T:#A63D1F;--T6:#8F2E12;--T5:#FAF0EC;
+  --O:#5A7D3E;--O5:#EBF3E5;
+  --I:#3D2F9E;--I5:#ECEAFB;
+  --BG:#EBEBEB;--W:#FFFFFF;
+  --BD:#D8D8D8;--BL:#EDEDED;
+  --t1:#1A1A1A;--t2:#6B6B6B;--tm:#ABABAB;
+  --fd:'DM Serif Display',serif;
+  --fb:'Inter',sans-serif;
+}
+html,body{width:1920px;height:1080px;overflow:hidden;}
+body{font-family:var(--fb);background:var(--BG);color:var(--t1);display:flex;}
+.CZ{width:70%;height:100%;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;}
+.EZ{
+  width:30%;height:100%;flex-shrink:0;background:#111;
+  overflow:hidden;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:0 0 52px;border-left:1px solid rgba(255,255,255,.06);position:relative;
+}
+.EZ::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 40% 30%,#1a1a1a 0%,#090909 100%);}
+.EZ-ph{position:relative;z-index:1;display:flex;flex-direction:column;
+  align-items:center;gap:14px;color:rgba(255,255,255,.14);}
+.EZ-ic{width:72px;height:72px;border-radius:50%;
+  border:1.5px dashed rgba(255,255,255,.14);
+  display:flex;align-items:center;justify-content:center;}
+.EZ-lb{font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-family:var(--fb);}
+.ey{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--T);}
+.ey-o{font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--O);}
+.bg{display:inline-flex;align-items:center;font-size:13px;font-weight:700;
+    letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:99px;}
+.bg-T{background:var(--T5);color:var(--T);}
+.bg-O{background:var(--O5);color:var(--O);}
+.divider{width:48px;height:3px;background:var(--O);border-radius:2px;margin:24px 0;}
+</style>
+<style>
+.CZ{background:var(--W);padding:80px;display:flex;flex-direction:column;justify-content:center;gap:36px;}
+.steps{display:flex;flex-direction:column;gap:16px;}
+.step{display:flex;align-items:flex-start;gap:20px;}
+.sn{width:48px;height:48px;border-radius:50%;background:var(--O);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0;}
+.st{font-size:24px;color:var(--t1);line-height:1.5;padding-top:8px;}
+.footer-note{background:var(--O5);border-radius:16px;padding:24px 32px;border:1px solid rgba(90,125,62,.2);}
+.fn-t{font-size:24px;color:var(--O);font-weight:600;}
+</style>
+<body>
+<div class="CZ">
+  <div>
+    <div class="ey-o" style="margin-bottom:14px">Следующий шаг</div>
+    <div style="font-family:var(--fd);font-size:72px;letter-spacing:-.04em;line-height:.92">Один<br>простой шаг</div>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="sn">1</div><div class="st">Заполните анкету — 3 вопроса, 2 минуты</div></div>
+    <div class="step"><div class="sn">2</div><div class="st">Я свяжусь лично и договоримся о звонке</div></div>
+    <div class="step"><div class="sn">3</div><div class="st">На звонке — разберу вашу ситуацию. Без продаж в лоб</div></div>
+  </div>
+  <div class="footer-note">
+    <div class="fn-t">Лучший момент думать о росте — когда вы ещё работаете</div>
+  </div>
+</div>
+<div class="EZ"><div class="EZ-ph">
+  <div class="EZ-ic"><svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+  <span class="EZ-lb">Эксперт</span>
+</div></div>
+</body>`},
+];
+
+let cur = 0;
+
+// ── BUILD GRID ──
+function buildGrid() {
+  const g = document.getElementById('grid');
+  slides.forEach((s,i) => {
+    const c = document.createElement('div');
+    c.className = 'pc';
+    c.dataset.id = s.id; c.dataset.name = s.name; c.dataset.desc = s.desc;
+    c.onclick = () => openM(i);
+    c.innerHTML = `
+      <div class="pp" id="pp${i}"></div>
+      <button class="fav" onclick="fav(event,this)">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      </button>
+      <div class="pf">
+        <div class="pid">${s.id}</div>
+        <div class="pname">${s.name}</div>
+        <div class="pdesc">${s.desc}</div>
+      </div>`;
+    g.appendChild(c);
+  });
+}
+
+// ── LAZY PREVIEWS ──
+function initPreviews() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting || e.target.dataset.done) return;
+      e.target.dataset.done = '1';
+      const i = +e.target.id.replace('pp','');
+      const fr = document.createElement('iframe');
+      fr.srcdoc = slides[i].html;
+      fr.scrolling = 'no';
+      fr.style.cssText = 'width:400%;height:400%;transform:scale(.25);transform-origin:top left;border:none;pointer-events:none;';
+      e.target.appendChild(fr);
+      obs.unobserve(e.target);
+    });
+  }, {rootMargin:'300px'});
+  document.querySelectorAll('[id^="pp"]').forEach(el => obs.observe(el));
+}
+
+// ── MODAL ──
+function openM(i) {
+  cur = i;
+  updM();
+  document.getElementById('mov').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function updM() {
+  const s = slides[cur];
+  document.getElementById('mid').textContent = s.id;
+  document.getElementById('mname').textContent = s.name;
+  document.getElementById('mif').srcdoc = s.html;
+}
+function closeM() {
+  document.getElementById('mov').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function ovClick(e) { if (e.target===document.getElementById('mov')) closeM(); }
+function nav(d) { cur=(cur+d+slides.length)%slides.length; updM(); }
+
+// ── FULLSCREEN ──────────────────────────────────────────────────
+let fsActive = 'a';
+let fsAnimating = false;
+let fsMode = 'fade'; // fade | zoom | reveal | morph
+
+function setFsMode(mode, btn) {
+  fsMode = mode;
+  document.querySelectorAll('.fs-mode').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function fsApplySize(iframe) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight - 60;
+  const scale = Math.min(vw / 1920, vh / 1080);
+  const vfw = Math.round(1920 * scale);
+  const vfh = Math.round(1080 * scale);
+  iframe.style.width           = '1920px';
+  iframe.style.height          = '1080px';
+  iframe.style.transform       = `scale(${scale})`;
+  iframe.style.transformOrigin = 'top left';
+  iframe.style.display         = 'block';
+  iframe.style.flexShrink      = '0';
+  iframe.style.marginLeft = ((vw  - vfw) / 2) + 'px';
+  iframe.style.marginTop  = ((vh  - vfh) / 2) + 'px';
+  const slot = iframe.parentElement;
+  slot.style.position = 'absolute';
+  slot.style.inset    = '0';
+  slot.style.width    = '';
+  slot.style.height   = '';
+  slot.style.overflow = 'hidden';
+}
+
+function fsBuildDots() {
+  const wrap = document.getElementById('fs-dots');
+  wrap.innerHTML = '';
+  slides.forEach((s, i) => {
+    const d = document.createElement('div');
+    d.className = 'fs-dot' + (i === cur ? ' on' : '');
+    d.onclick = () => { if (i !== cur) fsGoTo(i); };
+    wrap.appendChild(d);
+  });
+}
+
+function fsUpdateMeta() {
+  const s = slides[cur];
+  document.getElementById('fs-id').textContent   = s.id;
+  document.getElementById('fs-name').textContent = s.name;
+  document.querySelectorAll('.fs-dot').forEach((d,i) => d.classList.toggle('on', i===cur));
+}
+
+function goFS() {
+  closeM();
+  fsActive = 'a';
+  const ifA = document.getElementById('fs-if-a');
+  const ifB = document.getElementById('fs-if-b');
+  const slA = document.getElementById('fs-slot-a');
+  const slB = document.getElementById('fs-slot-b');
+
+  slA.className = `fs-slot ${fsMode}-active active`;
+  slB.className = `fs-slot ${fsMode}-idle`;
+  fsApplySize(ifA);
+  fsApplySize(ifB);
+  ifA.srcdoc = slides[cur].html;
+  ifB.srcdoc = '';
+
+  fsBuildDots();
+  fsUpdateMeta();
+  document.getElementById('fsov').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function fsNav(dir) {
+  if (fsAnimating) return;
+  const next = (cur + dir + slides.length) % slides.length;
+  fsGoTo(next, dir);
+}
+
+// Duration per mode (ms) — used for cleanup timeout
+const fsDuration = { fade:520, zoom:520, reveal:580, morph:500 };
+
+function fsGoTo(next, dir) {
+  if (fsAnimating || next === cur) return;
+  if (dir === undefined) dir = next > cur ? 1 : -1;
+  fsAnimating = true;
+
+  const m = fsMode;
+  const incoming = fsActive === 'a' ? 'b' : 'a';
+  const outgoing  = fsActive;
+
+  const slIn  = document.getElementById('fs-slot-' + incoming);
+  const slOut = document.getElementById('fs-slot-' + outgoing);
+  const ifIn  = document.getElementById('fs-if-' + incoming);
+
+  cur = next;
+  ifIn.srcdoc = slides[cur].html;
+  fsApplySize(ifIn);
+  fsUpdateMeta();
+
+  // Set incoming to start state (no transition yet)
+  slIn.className = `fs-slot ${m}-enter`;
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      // Trigger transition to active
+      slIn.className  = `fs-slot ${m}-active active`;
+      // Trigger exit on outgoing
+      slOut.className = `fs-slot ${m}-exit`;
+
+      fsActive = incoming;
+
+      setTimeout(() => {
+        slOut.className = `fs-slot ${m}-idle`;
+        document.getElementById('fs-if-' + outgoing).srcdoc = '';
+        fsAnimating = false;
+      }, fsDuration[m] + 60);
+    });
+  });
+}
+
+function closeFS() {
+  document.getElementById('fsov').classList.remove('open');
+  document.body.style.overflow = '';
+  fsAnimating = false;
+}
+
+window.addEventListener('resize', () => {
+  if (!document.getElementById('fsov').classList.contains('open')) return;
+  fsApplySize(document.getElementById('fs-if-a'));
+  fsApplySize(document.getElementById('fs-if-b'));
+});
+
+// ── COPY HTML ──
+function copyHTML() {
+  navigator.clipboard.writeText(slides[cur].html).then(() => {
+    const btn = document.querySelector('.mb-g');
+    const orig = btn.innerHTML;
+    btn.textContent = '✓ Скопировано';
+    btn.style.color = '#5A7D3E';
+    setTimeout(() => { btn.innerHTML = orig; btn.style.color=''; }, 2000);
+  });
+}
+
+// ── FAV ──
+function fav(e,btn) { e.stopPropagation(); btn.classList.toggle('on'); }
+
+// ── SEARCH ──
+document.getElementById('search').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  let n = 0;
+  document.querySelectorAll('.pc').forEach(c => {
+    const ok = !q || c.dataset.id.toLowerCase().includes(q)
+               || c.dataset.name.toLowerCase().includes(q)
+               || c.dataset.desc.toLowerCase().includes(q);
+    c.classList.toggle('hidden', !ok);
+    if(ok) n++;
+  });
+  document.getElementById('vcnt').textContent = n;
+  document.getElementById('gcnt').textContent = n + ' паттернов';
+});
+
+// ── KEYS ──
+document.addEventListener('keydown', e => {
+  const mOpen = document.getElementById('mov').classList.contains('open');
+  const fOpen = document.getElementById('fsov').classList.contains('open');
+  if (e.key==='Escape') { if(fOpen) closeFS(); else if(mOpen) closeM(); }
+  if (e.key==='ArrowRight') { if(fOpen) fsNav(1);  else if(mOpen) nav(1);  }
+  if (e.key==='ArrowLeft')  { if(fOpen) fsNav(-1); else if(mOpen) nav(-1); }
+});
+
+buildGrid();
+initPreviews();
+</script>
+</body>
+</html>
